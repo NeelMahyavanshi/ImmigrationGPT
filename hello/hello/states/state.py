@@ -4,6 +4,14 @@ import uuid
 from typing import Any, Optional, TypedDict
 import logging
 from datetime import datetime
+import sys
+from pathlib import Path
+
+BASE = Path(__file__).resolve().parents[3]
+if str(BASE / "bridge") not in sys.path:
+    sys.path.insert(0, str(BASE / "bridge"))
+
+from router_bridge import run_chitchat, run_eligibility, run_documents, run_sop
 
 
 class Download(TypedDict):
@@ -162,11 +170,8 @@ class ChatState(AppState):
         }
         self.messages.append(message)
 
-    def _handle_response(self, response_json: dict, panel_type: str = ""):
-        payload = response_json.get("payload", {})
-        reply = response_json.get("reply", "")
+    def _handle_response(self, reply: str, files: list, payload: dict, panel_type: str = ""):
         panel_data = payload if panel_type else {}
-        files = response_json.get("files", [])
         if files:
             panel_type = "downloads"
             panel_data = {"downloads": files}
@@ -177,131 +182,50 @@ class ChatState(AppState):
                 "assistant", reply, panel_type=panel_type, panel_data=panel_data
             )
 
-    async def _mock_chitchat(self):
-        await asyncio.sleep(0.5)
-        return {
-            "reply": "Sure\\[em]what part of the process do you want help with: eligibility, document checklist, or SOP?",
-            "files": [],
-            "payload": {"escalate_to": "eligibility_agent"},
-        }
+    async def _call_real_agent(self, agent_name: str, user_text: str):
+        try:
+            if agent_name == "eligibility":
+                reply, files, payload = await asyncio.to_thread(
+                    run_eligibility, user_text, self.session_id
+                )
+                return reply, files, payload
+            elif agent_name == "documents":
+                reply, files, payload = await asyncio.to_thread(
+                    run_documents, user_text, self.session_id
+                )
+                return reply, files, payload
+            elif agent_name == "sop":
+                reply, files, payload = await asyncio.to_thread(
+                    run_sop, user_text, self.session_id
+                )
+                return reply, files, payload
+            else:
+                reply, files, payload = await asyncio.to_thread(
+                    run_chitchat, user_text, self.session_id
+                )
+                return reply, files, payload
+        except Exception as e:
+            logging.exception(f"Error calling real agent: {e}")
+            return f"An error occurred: {str(e)}", [], {}
 
-    async def _mock_eligibility(self):
-        await asyncio.sleep(1)
-        return {
-            "reply": "Here are programs that match your profile and any gaps to address.",
-            "files": [],
-            "payload": {
-                "crs_estimate": 482,
-                "eligible_programs": [
-                    {
-                        "program_name": "Express Entry \\[em] FSW",
-                        "program_type": "Federal",
-                        "province": "All",
-                        "official_url": "https://www.canada.ca/en/immigration-refugees-citizenship/services/immigrate-canada/express-entry.html",
-                        "reason": "Meets minimum eligibility and estimated CRS above historical cutoffs.",
-                    },
-                    {
-                        "program_name": "OINP \\[em] Human Capital Priorities",
-                        "program_type": "Provincial Nominee",
-                        "province": "Ontario",
-                        "official_url": "https://www.ontario.ca/page/ontario-immigrant-nominee-program-oinp",
-                        "reason": "NOC in a targeted TEER and competitive CRS for periodic HCP draws.",
-                    },
-                ],
-                "ineligible_programs": [
-                    {
-                        "program_name": "AIPP (Atlantic Immigration Program)",
-                        "missing_requirements": [
-                            "No qualifying job offer from an Atlantic employer",
-                            "IELTS General not yet taken",
-                        ],
-                    }
-                ],
-            },
-        }
-
-    async def _mock_documents(self):
-        await asyncio.sleep(1)
-        return {
-            "reply": "Here's the checklist for your study/work pathway with direct source links.",
-            "files": [],
-            "payload": {
-                "required_documents": [
-                    {
-                        "name": "Valid Passport",
-                        "description": "Clear scan of bio page and all visa stamps.",
-                        "mandatory": True,
-                        "source_url": "https://www.canada.ca/en/immigration-refugees-citizenship.html",
-                    },
-                    {
-                        "name": "Digital Photo",
-                        "description": "Meets IRCC photo specifications.",
-                        "mandatory": True,
-                        "source_url": "https://www.canada.ca/en/immigration-refugees-citizenship/services/application/photographs.html",
-                    },
-                ],
-                "conditional_documents": [
-                    {
-                        "name": "Police Certificate",
-                        "description": "For countries where you lived 6+ months since age 18.",
-                        "mandatory": False,
-                        "conditional_on": "Residence history",
-                        "source_url": "https://www.canada.ca/en/immigration-refugees-citizenship/services/application/medical-police/police-certificates.html",
-                    }
-                ],
-                "optional_but_recommended": [
-                    {
-                        "name": "Letters of Reference",
-                        "description": "Confirms job duties and dates to support NOC claims.",
-                        "mandatory": False,
-                        "source_url": "https://noc.esdc.gc.ca/",
-                    }
-                ],
-                "forms": [
-                    {
-                        "form_number": "IMM 1294",
-                        "title": "Application for Study Permit Made Outside of Canada",
-                        "pdf_url": "https://www.canada.ca/content/dam/ircc/migration/ircc/english/pdf/kits/forms/imm1294e.pdf",
-                        "instructions_url": "https://www.canada.ca/en/immigration-refugees-citizenship/services/application/application-forms-guides/application-study-permit-outside-canada.html",
-                    },
-                    {
-                        "form_number": "IMM 5645",
-                        "title": "Family Information Form",
-                        "pdf_url": "https://www.canada.ca/content/dam/ircc/migration/ircc/english/pdf/kits/forms/imm5645e.pdf",
-                    },
-                ],
-            },
-        }
-
-    async def _mock_sop(self):
-        await asyncio.sleep(0.5)
-        return {
-            "reply": "Your SOP draft is ready\\[em]download the PDF and review the intent and study plan sections.",
-            "files": [{"name": "SOP_Rahul_Kumar_UofT.pdf"}],
-            "payload": {},
-        }
-
-    async def _call_agent(self, agent_name: str):
+    async def _call_agent(self, agent_name: str, user_text: str):
         self.loading = True
         yield
         try:
+            reply, files, payload = await self._call_real_agent(agent_name, user_text)
+
+            panel_type = ""
             if agent_name == "eligibility":
-                response = await self._mock_eligibility()
-                self._handle_response(response, panel_type="eligibility")
+                panel_type = "eligibility"
             elif agent_name == "documents":
-                response = await self._mock_documents()
-                self._handle_response(response, panel_type="documents")
-            elif agent_name == "sop":
-                response = await self._mock_sop()
-                self._handle_response(response)
-            else:
-                response = await self._mock_chitchat()
-                self._handle_response(response, panel_type="")
-            yield response.get("payload")
+                panel_type = "documents"
+
+            self._handle_response(reply, files, payload, panel_type=panel_type)
+            yield payload
             return
         except Exception as e:
-            logging.exception(f"Error calling mock agent: {e}")
-            self._add_message("system", f"An error occurred: {e}")
+            logging.exception(f"Error calling agent: {e}")
+            self._add_message("system", f"An error occurred: {str(e)}")
             return
         finally:
             self.loading = False
@@ -341,7 +265,7 @@ class ChatState(AppState):
         ):
             endpoint = "sop"
         initial_payload = None
-        async for payload in self._call_agent(endpoint):
+        async for payload in self._call_agent(endpoint, user_input):
             if payload:
                 initial_payload = payload
         if (
@@ -352,10 +276,10 @@ class ChatState(AppState):
             escalation_map = {
                 "eligibility_agent": "eligibility",
                 "document_agent": "documents",
-                "sop_agent": "sop",
+                "SOP_Agent": "sop",
             }
             escalated_endpoint = escalation_map.get(initial_payload["escalate_to"])
             if escalated_endpoint:
-                async for _ in self._call_agent(escalated_endpoint):
+                async for _ in self._call_agent(escalated_endpoint, user_input):
                     pass
         yield
