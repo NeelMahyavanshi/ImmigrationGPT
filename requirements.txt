@@ -1,0 +1,17 @@
+agno
+groq
+python-dotenv
+pandas
+langchain
+fastapi
+uvicorn
+streamlit
+chromadb
+huggingface-hub
+openai
+google-generative-ai
+requests
+beautifulsoup4
+crawl4ai    
+asyncio
+reflex==0.8.17

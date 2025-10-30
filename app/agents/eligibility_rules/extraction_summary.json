@@ -1,0 +1,154 @@
+{
+  "Extraction Date": "2025-10-17",
+  "Total Programs": 29,
+  "Federal Programs": 8,
+  "Provincial Programs": 20,
+  "Quebec Programs": 1,
+  "Programs List": [
+    {
+      "index": 1,
+      "program_name": "Federal Skilled Worker Program (FSW)",
+      "type": "federal"
+    },
+    {
+      "index": 2,
+      "program_name": "Canadian Experience Class (CEC)",
+      "type": "federal"
+    },
+    {
+      "index": 3,
+      "program_name": "Federal Skilled Trades Program (FST)",
+      "type": "federal"
+    },
+    {
+      "index": 4,
+      "program_name": "Atlantic Immigration Program (AIP)",
+      "type": "federal"
+    },
+    {
+      "index": 5,
+      "program_name": "Rural and Northern Immigration Pilot (RNIP)",
+      "type": "federal"
+    },
+    {
+      "index": 6,
+      "program_name": "Agri-Food Pilot",
+      "type": "federal"
+    },
+    {
+      "index": 7,
+      "program_name": "Start-Up Visa Program",
+      "type": "federal"
+    },
+    {
+      "index": 8,
+      "program_name": "Home Care Worker Immigration Pilots (Child Care & Home Support)",
+      "type": "federal"
+    },
+    {
+      "index": 9,
+      "program_name": "Ontario Immigrant Nominee Program – Employer Job Offer: Foreign Worker Stream",
+      "type": "provincial"
+    },
+    {
+      "index": 10,
+      "program_name": "Ontario Immigrant Nominee Program – Masters Graduate Stream",
+      "type": "provincial"
+    },
+    {
+      "index": 11,
+      "program_name": "Ontario Immigrant Nominee Program – PhD Graduate Stream",
+      "type": "provincial"
+    },
+    {
+      "index": 12,
+      "program_name": "Ontario Immigrant Nominee Program – Employer Job Offer: In-Demand Skills Stream",
+      "type": "provincial"
+    },
+    {
+      "index": 13,
+      "program_name": "Ontario Immigrant Nominee Program – Employer Job Offer: Foreign Worker Stream",
+      "type": "provincial"
+    },
+    {
+      "index": 14,
+      "program_name": "Ontario Immigrant Nominee Program – Masters Graduate Stream",
+      "type": "provincial"
+    },
+    {
+      "index": 15,
+      "program_name": "Ontario Immigrant Nominee Program – PhD Graduate Stream",
+      "type": "provincial"
+    },
+    {
+      "index": 16,
+      "program_name": "Ontario Immigrant Nominee Program – Employer Job Offer: In-Demand Skills Stream",
+      "type": "provincial"
+    },
+    {
+      "index": 17,
+      "program_name": "BC Provincial Nominee Program – Skills Immigration: Skilled Worker",
+      "type": "provincial"
+    },
+    {
+      "index": 18,
+      "program_name": "BC Provincial Nominee Program – Skills Immigration: International Graduate",
+      "type": "provincial"
+    },
+    {
+      "index": 19,
+      "program_name": "BC Provincial Nominee Program – Skills Immigration: Entry Level and Semi-Skilled",
+      "type": "provincial"
+    },
+    {
+      "index": 20,
+      "program_name": "Alberta Advantage Immigration Program – Alberta Express Entry Stream",
+      "type": "provincial"
+    },
+    {
+      "index": 21,
+      "program_name": "Alberta Advantage Immigration Program – Alberta Opportunity Stream",
+      "type": "provincial"
+    },
+    {
+      "index": 22,
+      "program_name": "New Brunswick Provincial Nominee Program – Skilled Worker Stream",
+      "type": "provincial"
+    },
+    {
+      "index": 23,
+      "program_name": "Nova Scotia Nominee Program – Skilled Worker Stream",
+      "type": "provincial"
+    },
+    {
+      "index": 24,
+      "program_name": "Newfoundland and Labrador Provincial Nominee Program – Skilled Worker Category",
+      "type": "provincial"
+    },
+    {
+      "index": 25,
+      "program_name": "Newfoundland and Labrador Provincial Nominee Program – Express Entry Skilled Worker",
+      "type": "provincial"
+    },
+    {
+      "index": 26,
+      "program_name": "Prince Edward Island Provincial Nominee Program – Labour Impact: Skilled Worker Stream",
+      "type": "provincial"
+    },
+    {
+      "index": 27,
+      "program_name": "Quebec Skilled Worker Selection Program (SWSP) - Stream 1: Highly Qualified and Specialized Skills",
+      "type": "quebec"
+    },
+    {
+      "index": 28,
+      "program_name": "Saskatchewan Immigrant Nominee Program – International Skilled Worker: Saskatchewan Express Entry",
+      "type": "provincial"
+    },
+    {
+      "index": 29,
+      "program_name": "Manitoba Provincial Nominee Program – Skilled Worker in Manitoba Stream",
+      "type": "provincial"
+    }
+  ]
+}
