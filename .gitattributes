@@ -1,8 +1,11 @@
-*.sqlite3 filter=lfs diff=lfs merge=lfs -text
-*.bin filter=lfs diff=lfs merge=lfs -text
-*.pickle filter=lfs diff=lfs merge=lfs -text
-data/embeddings/** filter=lfs diff=lfs merge=lfs -text
-data/chunks/** filter=lfs diff=lfs merge=lfs -text
-data/raw/** filter=lfs diff=lfs merge=lfs -text
+# Track smaller JSON and data files with LFS
 data/urls-list/** filter=lfs diff=lfs merge=lfs -text
 *.jsonl filter=lfs diff=lfs merge=lfs -text
+
+# Large files should be excluded via .gitignore instead of LFS
+# *.sqlite3
+# *.bin
+# *.pickle
+# data/embeddings/**
+# data/chunks/**
+# data/raw/**

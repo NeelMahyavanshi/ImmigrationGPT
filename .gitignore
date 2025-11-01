@@ -2,6 +2,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
+.pytest_cache/
 
 # Virtual environments
 venv/
@@ -10,19 +11,25 @@ ENV/
 
 # Editor and system files
 .vscode/
+.idea/
 .DS_Store
 Thumbs.db
 
-# Environment variables
+# Environment variables and secrets
 .env
+*.env
+
+# Large files and data directories
+*.sqlite3
+*.bin
+*.pickle
+data/embeddings/**
+data/chunks/**
+data/raw/**
 
 # Build artifacts
 dist/
 build/
 
-# NOTE: Large data files (json/jsonl, embeddings, sqlite, binary blobs) are
-# intentionally NOT excluded here so they can be tracked with Git LFS.
-# If you want some of these directories ignored instead of tracked by LFS,
-# add them here. Example (commented out):
-# data/chunks/
-# data/embeddings/
+# Logs
+*.log
