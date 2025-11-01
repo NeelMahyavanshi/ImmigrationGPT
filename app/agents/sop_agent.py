@@ -133,8 +133,8 @@ You are a universal document drafting expert. Your mission is to generate a prof
 
 # --- Create the Agent ---
 sop_agent = Agent(
-    # model=Groq(id="openai/gpt-oss-120b", temperature=0.2),
-    model=Gemini(id="gemini-2.5-flash"),
+    model=Groq(id="openai/gpt-oss-120b", temperature=0.2),
+    # model=Gemini(id="gemini-2.5-flash"),
     db=db,
     enable_user_memories=True,    
     add_memories_to_context=True,

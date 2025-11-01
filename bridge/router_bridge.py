@@ -1,3 +1,9 @@
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# bridge/router_bridge.py
 # bridge/router_bridge.py
 from pathlib import Path
 import sys
@@ -52,19 +58,43 @@ def _text_reply(res, payload):
     return "How can I help with Canadian immigration today?"
 
 def run_chitchat(user_text: str, user_id: str):
-    res = chitchat_agent.run(user_text, user_id=user_id)
-    files = _collect_files(res)
-    payload = _to_payload(res)
-    return (_text_reply(res, payload), files, payload)
+    logger.info(f"Running chitchat for user {user_id}: {user_text[:50]}...")
+    try:
+        res = chitchat_agent.run(user_text, user_id=user_id)
+        files = _collect_files(res)
+        payload = _to_payload(res)
+        logger.info(f"Chitchat completed for user {user_id}")
+        return (_text_reply(res, payload), files, payload)
+    except Exception as e:
+        logger.error(f"Error in run_chitchat for user {user_id}: {e}")
+        raise
 
 def run_eligibility(user_text: str, user_id: str):
-    res = eligibility_agent.run(user_text, user_id=user_id)
-    return (_text_reply(res, _to_payload(res)), _collect_files(res), _to_payload(res))
+    logger.info(f"Running eligibility for user {user_id}: {user_text[:50]}...")
+    try:
+        res = eligibility_agent.run(user_text, user_id=user_id)
+        logger.info(f"Eligibility completed for user {user_id}")
+        return (_text_reply(res, _to_payload(res)), _collect_files(res), _to_payload(res))
+    except Exception as e:
+        logger.error(f"Error in run_eligibility for user {user_id}: {e}")
+        raise
 
 def run_documents(user_text: str, user_id: str):
-    res = document_agent.run(user_text, user_id=user_id)
-    return (_text_reply(res, _to_payload(res)), _collect_files(res), _to_payload(res))
+    logger.info(f"Running documents for user {user_id}: {user_text[:50]}...")
+    try:
+        res = document_agent.run(user_text, user_id=user_id)
+        logger.info(f"Documents completed for user {user_id}")
+        return (_text_reply(res, _to_payload(res)), _collect_files(res), _to_payload(res))
+    except Exception as e:
+        logger.error(f"Error in run_documents for user {user_id}: {e}")
+        raise
 
 def run_sop(user_text: str, user_id: str):
-    res = sop_agent.run(user_text, user_id=user_id)
-    return (_text_reply(res, _to_payload(res)), _collect_files(res), _to_payload(res))
+    logger.info(f"Running SOP for user {user_id}: {user_text[:50]}...")
+    try:
+        res = sop_agent.run(user_text, user_id=user_id)
+        logger.info(f"SOP completed for user {user_id}")
+        return (_text_reply(res, _to_payload(res)), _collect_files(res), _to_payload(res))
+    except Exception as e:
+        logger.error(f"Error in run_sop for user {user_id}: {e}")
+        raise

@@ -54,8 +54,9 @@ db_path = Path(__file__).parent.parent.parent / "data" / "forms" / "ircc_forms_d
 
 # === AGENT ===
 document_agent = Agent(
-    model=Groq(id="openai/gpt-oss-120b"),  
-    parser_model=Gemini(id="gemini-2.5-flash"),
+    # model=Groq(id="openai/gpt-oss-120b"),
+    model=Gemini(id="gemini-2.5-flash"),
+    # parser_model=Gemini(id="gemini-2.5-flash"),
     db=db,
     enable_user_memories=True,    
     add_memories_to_context=True,

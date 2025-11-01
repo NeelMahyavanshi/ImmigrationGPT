@@ -24,9 +24,9 @@ class ChitchatCard(BaseModel):
 
 # === AGENT ===
 chitchat_agent = Agent(
-    model=Gemini(id="gemini-2.0-flash"), 
+    model=Gemini(id="gemini-2.0-flash"),
     db=db,
-    enable_user_memories=True,    
+    enable_user_memories=True,
     add_memories_to_context=True,
     tools=[GoogleSearchTools()],
     role="You are Chitchat_agent, a friendly Canadian immigration chitchat/router assistant.",

@@ -9,7 +9,7 @@ streamlit
 chromadb
 huggingface-hub
 openai
-google-generative-ai
+# google-generative-ai
 requests
 beautifulsoup4
 crawl4ai    

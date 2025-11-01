@@ -38,8 +38,19 @@ class ImprovementSuggestion(BaseModel):
     benefit: str
     steps: List[str]
 
+class UserProfile(BaseModel):
+    work_experience_years: float
+    education_level: str
+    clb_score: int
+    noc_teer_level: str
+    age: int
+    has_canadian_experience: bool
+    has_job_offer: bool
+    settlement_funds_cad: float
+    family_size: int
+
 class EligibilityResponse(BaseModel):
-    user_profile: dict  
+    user_profile: UserProfile  # Changed from dict to UserProfile
     eligible_programs: List[EligibleProgram]
     ineligible_programs: List[IneligibleProgram]
     crs_estimate: Optional[int] = None
@@ -205,7 +216,7 @@ def check_immigration_eligibility(
 eligibility_agent = Agent(
     name="ImmigrationEligibilityAgent",
     model=Groq(id="openai/gpt-oss-120b"),
-    parser_model=Gemini(id="gemini-2.5-flash"),
+    parser_model=Gemini(id="gemini-2.0-flash"),
     db=db,
     enable_user_memories=True,    
     add_memories_to_context=True,
