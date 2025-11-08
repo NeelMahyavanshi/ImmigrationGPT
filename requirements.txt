@@ -21,3 +21,4 @@ requests
 rich
 tqdm
 PyYAML
+googlesearch-python
