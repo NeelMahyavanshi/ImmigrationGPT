@@ -22,3 +22,4 @@ rich
 tqdm
 PyYAML
 googlesearch-python
+pycountry
