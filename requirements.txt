@@ -1,8 +1,6 @@
 agno==2.2.5
-agno==2.2.2
 beautifulsoup4==4.14.2
-crawl4ai==0.7.6
-crawl4ai==0.7.4
+crawl4ai
 langchain==1.0.5
 langchain_chroma==1.0.0
 langchain_huggingface==1.0.1
@@ -15,5 +13,5 @@ Requests==2.32.5
 rich==14.2.0
 streamlit==1.51.0
 streamlit==1.49.1
-supabase==2.24.0
+supabase
 tqdm==4.67.1
