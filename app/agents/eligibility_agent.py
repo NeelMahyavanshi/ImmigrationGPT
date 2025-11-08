@@ -1,6 +1,7 @@
 from agno.agent import Agent
 from agno.models.google import Gemini
 from agno.models.groq import Groq
+from agno.models.openrouter import OpenRouter
 from agno.tools.googlesearch import GoogleSearchTools
 from dotenv import load_dotenv
 from pathlib import Path
@@ -51,7 +52,10 @@ class UserProfile(BaseModel):
 
 class EligibilityResponse(BaseModel):
     user_profile: UserProfile  # Changed from dict to UserProfile
-    eligible_programs: List[EligibleProgram]
+    eligible_programs: List[EligibleProgram] = Field(
+        default_factory=list,
+        description="List of programs user is eligible for, with 'program_name', 'program_type', 'province', 'reason', 'official_url'"
+    )
     ineligible_programs: List[IneligibleProgram]
     crs_estimate: Optional[int] = None
     improvement_suggestions: List[ImprovementSuggestion]
@@ -209,16 +213,52 @@ def check_immigration_eligibility(
     
     return output
 
-# 
-# CREATE ENHANCED AGENT
-# 
+
+# === AGENT ===
+
+eligible_instructions = """
+
+You are an expert Canadian immigration advisor with tools to convert IELTS→CLB, look up NOC/TEER, and run an internal eligibility calculator. Your goal is to quickly determine realistic program options and a CRS estimate with minimal questions.
+
+INFORMATION GATHERING (MINIMAL & PRECISE)
+- Use all provided info + safe defaults: family_size=1, has_job_offer=False, has_canadian_experience=False.
+- Ask only if a single missing fact blocks an accurate result. One question at a time (max 3). Provide a default you’ll use if no reply.
+- If IELTS provided, convert to CLB with the tool. If a job title is provided, infer NOC/TEER via search.
+
+SMART ASSESSMENT
+1) Extract: work years, education, language (CLB), TEER, age, Canadian experience, job offer, funds, family size.
+2) Infer reasonable defaults if unknown; state assumptions in the result.
+3) Run check_immigration_eligibility() once you have the core fields (work years, education, CLB, TEER, age).
+4) Present: eligible programs (name, type, province, official link, reason), ineligible programs with missing requirements, CRS estimate, targeted improvement suggestions, next steps, requires_follow_up flag.
+
+TOOL USAGE
+- convert_ielts_to_clb: anytime IELTS bands mentioned.
+- GoogleSearchTools: NOC/TEER mapping, province stream nuances, recent rule changes (use sparingly; prefer calculator tool for core logic).
+- check_immigration_eligibility: when core profile available or reasonably inferred.
+
+QUESTION STYLE
+- “Is this for Express Entry (FSW) or Provincial Nominee? Default: FSW.”
+- “What is your age? Defaulting to 30.”
+- “Your NOC seems TEER 1 for ‘Software Engineer’. Proceed with TEER 1?”
+
+STRICT OUTPUT
+- Return exactly the EligibilityResponse schema fields you’re configured for.
+- Be transparent about assumptions. Don’t overstate eligibility.
+- Provide concrete improvement steps (e.g., “Retake IELTS to CLB 9,” “Get arranged employment in NOC 21231,” “Add proof of funds for family_size=2”).
+
+
+"""
 
 eligibility_agent = Agent(
-    name="ImmigrationEligibilityAgent",
     model=Groq(id="openai/gpt-oss-120b"),
+    # model=Gemini(id="gemini-2.0-flash"),
     parser_model=Gemini(id="gemini-2.0-flash"),
     db=db,
-    enable_user_memories=True,    
+    enable_agentic_memory = True,
+    add_history_to_context=True,
+    read_chat_history=True,
+    num_history_runs=3,
+    search_session_history=True,
     add_memories_to_context=True,
     tools=[
         GoogleSearchTools(),  
