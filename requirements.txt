@@ -1,17 +1,23 @@
+# requirements.txt
+
+# --- Core Frameworks ---
+streamlit
 agno==2.2.5
-beautifulsoup4==4.14.2
-crawl4ai
-langchain==1.0.5
-langchain_chroma==1.0.0
-langchain_huggingface==1.0.1
-playwright==1.55.0
-pydantic==2.12.4
-python-dotenv==1.2.1
-PyYAML==6.0.3
-reportlab==4.4.4
-Requests==2.32.5
-rich==14.2.0
-streamlit==1.51.0
-streamlit==1.49.1
+
+# --- Environment & Storage ---
+python-dotenv
 supabase
-tqdm==4.67.1
+psycopg2-binary # For Postgres database connection
+
+# --- Tools & Utilities (Let pip resolve versions) ---
+beautifulsoup4
+crawl4ai
+langchain
+langchain_chroma
+langchain_huggingface
+playwright
+reportlab
+requests
+rich
+tqdm
+PyYAML
