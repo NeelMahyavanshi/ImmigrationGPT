@@ -72,10 +72,18 @@ st.markdown("""
 with st.sidebar:
     st.header("⚙️ Session Management")
     st.info(f"Session ID: `{st.session_state.session_id[:8]}...`")
+    
+    # This is the corrected logic
     if st.button("🔄 Start New Session", use_container_width=True):
-        current_session_id = st.session_state.session_id
+        # Clear the entire session state
         st.session_state.clear()
-        st.session_state.session_id = current_session_id
+        
+        # Generate a BRAND NEW session ID to truly reset the memory
+        st.session_state.session_id = str(uuid.uuid4())
+        
+        logger.info(f"🚀 New session explicitly started: {st.session_state.session_id}")
+        
+        # Rerun the app to reflect the new, empty session
         st.rerun()
     
 
@@ -403,7 +411,7 @@ if query := st.chat_input("Ask your immigration question..."):
     try:
         with status_placeholder.container():
             with st.status("Thinking...", expanded=False) as status:
-                status.update(label="Routing your request...")
+                status.update(label="Thinking...")
                 reply, escalate_to = run_chitchat(query, user_id)
 
                 if escalate_to:
