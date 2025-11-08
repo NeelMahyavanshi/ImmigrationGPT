@@ -177,6 +177,7 @@ sniffio==1.3.1
 snowballstemmer==2.2.0
 soupsieve==2.8
 SQLAlchemy==2.0.44
+sqlalchemy
 sqlmodel==0.0.27
 storage3 @ file:///home/conda/feedstock_root/build_artifacts/storage3_1762537281589/work
 streamlit==1.51.0
